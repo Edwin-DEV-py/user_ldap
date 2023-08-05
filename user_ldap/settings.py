@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import ldap
-from django_auth_ldap.config import LDAPSearch
+from django_auth_ldap.config import LDAPSearch, ActiveDirectoryGroupType
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -57,18 +57,40 @@ ROOT_URLCONF = 'user_ldap.urls'
 
 ##ldap
 AUTH_LDAP_SERVER_URI = "ldap://192.168.0.50"
-AUTH_LDAP_BIND_DN = "cn=admin2,dc=ejemplo,dc=local"
+AUTH_LDAP_BIND_DN = "CN=bind,CN=Users,DC=ejemplo,DC=local"
 AUTH_LDAP_BIND_PASSWORD = "Emiliano12"
-AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=Users,dc=ejemplo,dc=local", ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
-AUTH_LDAP_ALWAYS_UPDATE_USER = True
+AUTH_LDAP_USER_SEARCH = LDAPSearch("dc=ejemplo,dc=local", ldap.SCOPE_SUBTREE, "(sAMAccountName=%(user)s)")
 
-AUTH_LDAP_CACHE_TIMEOUT = 3600
+AUTH_LDAP_USER_ATTR_MAP = {
+    "username": "sAMAccountName",
+    "first_name":"givenName",
+    "last_name": "sn",
+    "email":"mail"
+}
 
-AUTHENTICATION_BACKENDS = (
-        'django_auth_ldap.backend.LDAPBackend',
-        'django.contrib.auth.backends.ModelBackend',
-)
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
+            "dc=ejemplo,dc=local", ldap.SCOPE_SUBTREE, "(objectCategory=Group)"
+            )
+AUTH_LDAP_GROUP_TYPE = ActiveDirectoryGroupType(name_attr="cn")
+AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+            "is_superuser": "CN=django-admins,CN=Users,DC=ejemplo,DC=local",
+            "is_staff": "CN=django-admins,CN=Users,DC=ejemplo,DC=local",
+            }
+AUTH_LDAP_FIND_GROUP_PERMS = True
+AUTH_LDAP_CACHE_GROUPS = True
+AUTH_LDAP_GROUP_CACHE_TIMEOUT = 1  # 1 hour cache
 
+AUTHENTICATION_BACKENDS = [
+            'django_auth_ldap.backend.LDAPBackend',
+                'django.contrib.auth.backends.ModelBackend',
+]
+
+
+#REST_FRAMEWORK = {
+#    'DEFAULT_AUTHENTICATION_CLASSES': (
+#        'rest_framework.authentication.SessionAuthentication',
+#    ),
+#}
 
 TEMPLATES = [
     {
