@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
-from .views import LDAPLogin
+from .api import *
 
 urlpatterns = [
-    path('login',LDAPLogin.as_view())
+    path('login/', ldap_login, name='ldap-login'),
 ]

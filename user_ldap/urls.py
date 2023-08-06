@@ -20,5 +20,8 @@ from Users import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/',views.login,name='login'),
-    path('',views.index,name='index')
+    path('index/',views.index,name='index'),
+    path('api/',include('djoser.urls')),
+    path('api/', include('djoser.urls.jwt')),
+    path('api/',include('Users.urls'))
 ]
