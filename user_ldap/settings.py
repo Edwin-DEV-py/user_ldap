@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_auth_ldap',
     'rest_framework_simplejwt',
+    'corsheaders',
     'djoser',
     'Users'
 ]
@@ -51,12 +52,16 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+#cors
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'user_ldap.urls'
 
@@ -79,7 +84,7 @@ AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
 AUTH_LDAP_GROUP_TYPE = ActiveDirectoryGroupType(name_attr="cn")
 AUTH_LDAP_USER_FLAGS_BY_GROUP = {
             "is_superuser": "CN=django-admins,CN=Users,DC=ejemplo,DC=local",
-            "is_staff": "CN=django-admins,CN=Users,DC=ejemplo,DC=local",
+            "is_staff": "CN=django-admins,CN=Users,DC=ejemplo,DC=local"
             }
 AUTH_LDAP_FIND_GROUP_PERMS = True
 AUTH_LDAP_CACHE_GROUPS = True
@@ -87,43 +92,24 @@ AUTH_LDAP_GROUP_CACHE_TIMEOUT = 1  # 1 hour cache
 
 AUTHENTICATION_BACKENDS = [
             'django_auth_ldap.backend.LDAPBackend',
-                'django.contrib.auth.backends.ModelBackend',
+            'django.contrib.auth.backends.ModelBackend',
 ]
 
-##rest framework
+#JWT Authentication
+
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated'
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    ],
 }
 
-##djoser
 SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_TOKEN_CLASSES': (
-        'rest_framework_simplejwt.tokens.AccessToken',
-    )
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'username',
+    'USER_ID_CLAIM': 'user_id',
 }
 
-DJOSER = {
-    'LOGIN_FIELD': 'username',
-    'LOGIN_VIEW': 'Users.api.ldap_login',
-    'USER_CREATE_PASSWORD_RETYPE': True,
-    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
-    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
-    'SEND_CONFIRMATION_EMAIL': True,
-    'SET_USERNAME_RETYPE': True,
-    'SET_PASSWORD_RETYPE': True,
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': 'activate/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True
-}
+
 
 TEMPLATES = [
     {
