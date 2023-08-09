@@ -66,10 +66,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'user_ldap.urls'
 
 ##ldap
-AUTH_LDAP_SERVER_URI = "ldap://192.168.0.50"
-AUTH_LDAP_BIND_DN = "CN=bind,CN=Users,DC=ejemplo,DC=local"
-AUTH_LDAP_BIND_PASSWORD = "Emiliano12"
-AUTH_LDAP_USER_SEARCH = LDAPSearch("dc=ejemplo,dc=local", ldap.SCOPE_SUBTREE, "(sAMAccountName=%(user)s)")
+AUTH_LDAP_SERVER_URI = "ldap://74.235.60.226:389"
+AUTH_LDAP_BIND_DN = "CN=Administrador,CN=Users,DC=nexus,DC=upb"
+AUTH_LDAP_BIND_PASSWORD = "Adminupb1234"
+AUTH_LDAP_USER_SEARCH = LDAPSearch("dc=nexus,dc=upb", ldap.SCOPE_SUBTREE, "(sAMAccountName=%(user)s)")
 
 AUTH_LDAP_USER_ATTR_MAP = {
     "username": "sAMAccountName",
@@ -79,12 +79,12 @@ AUTH_LDAP_USER_ATTR_MAP = {
 }
 
 AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
-            "dc=ejemplo,dc=local", ldap.SCOPE_SUBTREE, "(objectCategory=Group)"
+            "dc=nexus,dc=upb", ldap.SCOPE_SUBTREE, "(objectCategory=Group)"
             )
 AUTH_LDAP_GROUP_TYPE = ActiveDirectoryGroupType(name_attr="cn")
 AUTH_LDAP_USER_FLAGS_BY_GROUP = {
-            "is_superuser": "CN=django-admins,CN=Users,DC=ejemplo,DC=local",
-            "is_staff": "CN=django-admins,CN=Users,DC=ejemplo,DC=local"
+            "is_superuser": "CN=django-admins,CN=Users,DC=nexus,DC=upb",
+            "is_staff": "CN=django-admins,CN=Users,DC=nexus,DC=upb"
             }
 AUTH_LDAP_FIND_GROUP_PERMS = True
 AUTH_LDAP_CACHE_GROUPS = True
