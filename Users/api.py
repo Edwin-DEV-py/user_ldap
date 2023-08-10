@@ -6,6 +6,7 @@ import jwt
 import datetime
 from ldap3 import Connection, Server
 
+##esta vista sirve para la API de django rest framework que se utilizara para conectar al cliente y genera el token de acceso.
 @api_view(['POST'])
 @permission_classes([])
 def ldap_login(request):

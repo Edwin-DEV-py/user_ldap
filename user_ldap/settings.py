@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django_auth_ldap',
     'rest_framework_simplejwt',
     'corsheaders',
-    'djoser',
     'Users'
 ]
 
@@ -60,17 +59,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-#cors
+#cors para permitir peticiones de clientes
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'user_ldap.urls'
 
-##ldap
+##Configuracion de conexion para el directorio activo en la nube
 AUTH_LDAP_SERVER_URI = "ldap://74.235.60.226:389"
 AUTH_LDAP_BIND_DN = "CN=Administrador,CN=Users,DC=nexus,DC=upb"
 AUTH_LDAP_BIND_PASSWORD = "Adminupb1234"
 AUTH_LDAP_USER_SEARCH = LDAPSearch("dc=nexus,dc=upb", ldap.SCOPE_SUBTREE, "(sAMAccountName=%(user)s)")
 
+#atributos del usuario del directorio activo y django
 AUTH_LDAP_USER_ATTR_MAP = {
     "username": "sAMAccountName",
     "first_name":"givenName",
@@ -78,6 +78,7 @@ AUTH_LDAP_USER_ATTR_MAP = {
     "email":"mail"
 }
 
+##configuracion de grupos y permisos del directorio
 AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
             "dc=nexus,dc=upb", ldap.SCOPE_SUBTREE, "(objectCategory=Group)"
             )
@@ -88,6 +89,8 @@ AUTH_LDAP_USER_FLAGS_BY_GROUP = {
             }
 AUTH_LDAP_FIND_GROUP_PERMS = True
 AUTH_LDAP_CACHE_GROUPS = True
+
+##regl;a de acceso
 AUTH_LDAP_GROUP_CACHE_TIMEOUT = 1  # 1 hour cache
 
 AUTHENTICATION_BACKENDS = [
@@ -95,8 +98,7 @@ AUTHENTICATION_BACKENDS = [
             'django.contrib.auth.backends.ModelBackend',
 ]
 
-#JWT Authentication
-
+#JWT Authentication, tokens para dar acceso a la app
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
